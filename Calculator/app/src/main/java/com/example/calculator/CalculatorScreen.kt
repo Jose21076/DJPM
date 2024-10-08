@@ -39,11 +39,25 @@ class Calculate(var num1: String, var num2: String) {
 
 @Composable
 fun CalculatorScreen(modifier: Modifier = Modifier.background( color = Color.Black)){
-
     var prev_num by remember { mutableStateOf("")}
     var num by remember {mutableStateOf("")}
     var opr by remember {mutableStateOf("")}
     var calc: Calculate
+
+    fun oprPress(op: String){
+        prev_num = num
+        num = ""
+        opr = op
+    }
+
+    fun numPress( n: String){
+        num += n
+    }
+
+    fun setDisplay (value:Float) : String{
+        if (value % 1 == 0.toFloat()) return value.toInt().toString()
+        else return value.toString()
+    }
 
     Column(modifier = modifier.padding(16.dp).fillMaxSize()) {
         Text(modifier = Modifier.weight(.15f)
@@ -58,113 +72,110 @@ fun CalculatorScreen(modifier: Modifier = Modifier.background( color = Color.Bla
         Row(modifier = Modifier.weight(.2f)){
             CalcButton(modifier = Modifier.weight(1f),
                 label = "7",
-                onClick = {num = num + "7"}
+                onClick = {numPress("7")}
             )
             Spacer(modifier = Modifier.padding(5.dp))
             CalcButton(modifier = Modifier.weight(1f),
                 label = "8",
-                onClick = {num = num + "8"}
+                onClick = {numPress("8")}
             )
             Spacer(modifier = Modifier.padding(5.dp))
             CalcButton(modifier = Modifier.weight(1f),
                 label = "9",
-                onClick = {num = num + "9"}
+                onClick = {numPress("9")}
             )
             Spacer(modifier = Modifier.padding(5.dp))
             CalcButton(modifier = Modifier.weight(1f),
                 label = "/",
                 isOperation = true,
-                onClick = {
-                    prev_num = num
-                    num = ""
-                    opr = "/"
-                }
+                onClick = { oprPress("/") }
             )
         }
         Row(modifier = Modifier.weight(.2f)){
             CalcButton(modifier = Modifier.weight(1f),
                 label = "4",
-                onClick = {num = num + "4"}
+                onClick = {numPress("4")}
             )
             Spacer(modifier = Modifier.padding(5.dp))
             CalcButton(modifier = Modifier.weight(1f),
                 label = "5",
-                onClick = {num = num + "5"}
+                onClick = {numPress("5")}
             )
             Spacer(modifier = Modifier.padding(5.dp))
             CalcButton(modifier = Modifier.weight(1f),
                 label = "6",
-                onClick = {num = num + "6"}
+                onClick = {numPress("6")}
             )
             Spacer(modifier = Modifier.padding(5.dp))
             CalcButton(modifier = Modifier.weight(1f),
                 label = "x",
                 isOperation = true,
-                onClick = {
-                    prev_num = num
-                    num = ""
-                    opr = "X"
-                }
+                onClick = { oprPress("X") }
             )
         }
         Row(modifier = Modifier.weight(.2f)){
             CalcButton(modifier = Modifier.weight(1f),
                 label = "1",
-                onClick = {num = num + "1"}
+                onClick = {numPress("1")}
             )
             Spacer(modifier = Modifier.padding(5.dp))
             CalcButton(modifier = Modifier.weight(1f),
                 label = "2",
-                onClick = {num = num + "2"}
+                onClick = {numPress("2")}
             )
             Spacer(modifier = Modifier.padding(5.dp))
             CalcButton(modifier = Modifier.weight(1f),
                 label = "3",
-                onClick = {num = num + "3"}
+                onClick = {numPress("3")}
             )
             Spacer(modifier = Modifier.padding(5.dp))
             CalcButton(modifier = Modifier.weight(1f),
                 label = "-",
                 isOperation = true,
-                onClick = {
-                    prev_num = num
-                    num = ""
-                    opr = "-"
-                }
+                onClick = {oprPress("-") }
             )
         }
         Row(modifier = Modifier.weight(.2f)){
             CalcButton(modifier = Modifier.weight(1f),
                 label = ".",
-                onClick = {num = num + "."}
+                onClick = {
+                    if(num == "") num = "0."
+                    else if (!num.contains('.')) num = num + "."
+                }
             )
             Spacer(modifier = Modifier.padding(5.dp))
             CalcButton(modifier = Modifier.weight(1f),
                 label = "0",
-                onClick = {num = num + "0"}
+                onClick = {numPress("0")}
             )
             Spacer(modifier = Modifier.padding(5.dp))
             CalcButton(modifier = Modifier.weight(1f),
                 label = "=",
                 isOperation = true,
                 onClick = {
-                    when (opr){
-                        "/" -> {
-                            calc = Calculate(prev_num,num)
-                            num = calc.divide()
+                    if (opr != "") {
+                        when (opr) {
+                            "/" -> {
+                                calc = Calculate(prev_num, num)
+                                num = calc.divide()
+                            }
+
+                            "X" -> {
+                                calc = Calculate(prev_num, num)
+                                num = calc.multiply()
+                            }
+
+                            "-" -> {
+                                calc = Calculate(prev_num, num)
+                                num = calc.subtract()
+                            }
+
+                            "+" -> {
+                                calc = Calculate(prev_num, num)
+                                num = calc.add()
+                            }
                         }
-                        "*" ->{
-                            calc = Calculate(prev_num,num)
-                            num = calc.multiply()
-                        }
-                        "-" ->{
-                            calc = Calculate(prev_num,num)
-                            num = calc.subtract()
-                        }
-                        "+" ->{
-                            calc = Calculate(prev_num,num)
-                            num = calc.add()
-                        }
+                        num = setDisplay(num.toFloat())
                     }
                 }
             )
@@ -172,11 +183,7 @@ fun CalculatorScreen(modifier: Modifier = Modifier.background( color = Color.Bla
             CalcButton(modifier = Modifier.weight(1f),
                 label = "+",
                 isOperation = true,
-                onClick = {
-                    prev_num = num
-                    num = ""
-                    opr = "+"
-                }
+                onClick = { oprPress("+") }
             )
         }
         Row(modifier = Modifier.weight(.2f)){
