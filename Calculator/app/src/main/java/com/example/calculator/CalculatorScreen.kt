@@ -153,7 +153,7 @@ fun CalculatorScreen(modifier: Modifier = Modifier.background( color = Color.Bla
                 label = "=",
                 isOperation = true,
                 onClick = {
-                    if (opr != "") {
+                    if (opr != "" && num != "") {
                         when (opr) {
                             "/" -> {
                                 calc = Calculate(prev_num, num)
@@ -199,7 +199,9 @@ fun CalculatorScreen(modifier: Modifier = Modifier.background( color = Color.Bla
                 label = "CE",
                 isEraser = true,
                 onClick = {
+                    prev_num = ""
                     num = ""
+                    opr = ""
                     calc = Calculate("","")
                 }
             )
