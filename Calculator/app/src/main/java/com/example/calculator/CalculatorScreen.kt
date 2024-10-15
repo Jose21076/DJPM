@@ -21,6 +21,38 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import com.example.calculator.components.CalcButton
+import kotlin.math.sqrt
+
+class CalculatorBrain {
+
+    enum class Operation( op:String) {
+        SUM("+"),
+        SUB("-"),
+        MUL("X"),
+        DIV("/"),
+        SQRT("√"),
+        SIGNAL("±"),
+        PERCENTAGE("%")
+    }
+
+    var operation : Operation? = null
+    var accumulator : Double = 0.0
+
+    fun doOperation(current : Double) : Double {
+        var result = when (operation){
+            Operation.SUM -> accumulator + current
+            Operation.DIV -> accumulator / current
+            Operation.SUB -> accumulator - current
+            Operation.MUL -> accumulator * current
+            Operation.SQRT -> sqrt(current)
+            Operation.SIGNAL -> -current
+            Operation.PERCENTAGE -> -current/100.0
+            else -> 0.0
+        }
+        return result
+    }
+
+}
 
 class Calculate(var num1: String, var num2: String) {
     fun divide(): String {
@@ -39,15 +71,17 @@ class Calculate(var num1: String, var num2: String) {
 
 @Composable
 fun CalculatorScreen(modifier: Modifier = Modifier.background( color = Color.Black)){
-    var prev_num by remember { mutableStateOf("")}
+    //var prev_num by remember { mutableStateOf("")}
     var num by remember {mutableStateOf("")}
-    var opr by remember {mutableStateOf("")}
-    var calc: Calculate
+    //var opr by remember {mutableStateOf("")}
+    //var calc: Calculate
+    var calc = remember {CalculatorBrain()}
 
     fun oprPress(op: String){
-        prev_num = num
+        calc.operation = CalculatorBrain.Operation.valueOf(op)
+        calc.accumulator = num.toDouble()
         num = ""
-        opr = op
+        //opr = op
     }
 
     fun numPress( n: String){
@@ -153,8 +187,9 @@ fun CalculatorScreen(modifier: Modifier = Modifier.background( color = Color.Bla
                 label = "=",
                 isOperation = true,
                 onClick = {
-                    if (opr != "" && num != "") {
-                        when (opr) {
+                    if (calc.operation != null && num != "") {
+                        calc.doOperation(num.toDouble())
+                        /*when (opr) {
                             "/" -> {
                                 calc = Calculate(prev_num, num)
                                 num = calc.divide()
@@ -174,7 +209,7 @@ fun CalculatorScreen(modifier: Modifier = Modifier.background( color = Color.Bla
                                 calc = Calculate(prev_num, num)
                                 num = calc.add()
                             }
-                        }
+                        }*/
                         num = setDisplay(num.toFloat())
                     }
                 }
@@ -199,10 +234,12 @@ fun CalculatorScreen(modifier: Modifier = Modifier.background( color = Color.Bla
                 label = "CE",
                 isEraser = true,
                 onClick = {
-                    prev_num = ""
+                    calc.accumulator = 0.0
                     num = ""
-                    opr = ""
-                    calc = Calculate("","")
+                    calc.operation = null
+                    //prev_num = ""
+                    //opr = ""
+                    //calc = Calculate("","")
                 }
             )
         }
