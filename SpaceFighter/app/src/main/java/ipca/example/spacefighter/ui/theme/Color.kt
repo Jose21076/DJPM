@@ -1,4 +1,4 @@
-package com.example.spacefighter.ui.theme
+package ipca.example.spacefighter.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

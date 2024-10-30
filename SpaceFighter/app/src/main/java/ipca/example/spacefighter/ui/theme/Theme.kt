@@ -1,4 +1,4 @@
-package com.example.spacefighter.ui.theme
+package ipca.example.spacefighter.ui.theme
 
 import android.app.Activity
 import android.os.Build

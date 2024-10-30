@@ -1,4 +1,4 @@
-package com.example.spacefighter
+package ipca.example.spacefighter
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.example.spacefighter.ui.theme
+package ipca.example.spacefighter.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

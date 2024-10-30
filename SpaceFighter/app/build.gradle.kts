@@ -1,14 +1,14 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.jetbrains.kotlin.android)
 }
 
 android {
-    namespace = "com.example.spacefighter"
+    namespace = "ipca.example.spacefighter"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.spacefighter"
+        applicationId = "ipca.example.spacefighter"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
