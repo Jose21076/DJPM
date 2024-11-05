@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.spacefighter"
+    namespace = "com.example.bomber"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.spacefighter"
+        applicationId = "com.example.bomber"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
