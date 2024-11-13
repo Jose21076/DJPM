@@ -9,43 +9,47 @@ class Player {
 
     var x = 0
     var y = 0
-    var speed = 0
+    var speedRight = 10
+    var speedLeft = -10
     var minY = 0
     var maxY = 0
+    var minX = 0
+    var maxX = 0
 
     var bitmap : Bitmap
-    var boosting = false
-
-    private val GRAVITY = -10
-    private val MAX_SPEED = 20
-    private val MIN_SPEED = 1
+    var right = false
+    var left = false
+    var up = false
+    var down = false
 
     var detectCollision : Rect
 
-    constructor(context: Context, height: Int){
+    constructor(context: Context, height: Int, width: Int){
         bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.player)
 
         maxY = height - bitmap.height
         minY = 0
 
-        x = 75
-        y = 50
+        minX = 0
+        maxX = width - bitmap.width
 
-        speed = 1
+        x = width / 2
+        y = maxY
 
         detectCollision = Rect(x, y, bitmap.width, bitmap.height)
     }
 
     fun update(){
-        if (boosting) speed += 2
-        else speed -= 5
-        if (speed > MAX_SPEED) speed = MAX_SPEED
-        if (speed < MIN_SPEED) speed = MIN_SPEED
 
-        y -= speed + GRAVITY
+        if (right) x += speedRight
+        if (left) x += speedLeft
+        if (up) y += speedLeft
+        if (down) y += speedRight
 
-        if (y < minY) y = minY
-        if (y > maxY) y = maxY
+        if (x < minX) x = minX
+        if (x > maxX) x = maxX
+        if(y< minY) y = minY
+        if(y> maxY) y = maxY
 
         detectCollision.left = x
         detectCollision.top = y

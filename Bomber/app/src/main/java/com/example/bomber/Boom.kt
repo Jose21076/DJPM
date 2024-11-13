@@ -27,7 +27,7 @@ class Boom {
     fun update(){
         detectCollision.left = x
         detectCollision.top = y
-        detectCollision.right = x + bitmap.width
-        detectCollision.bottom = y + bitmap.height
+        detectCollision.right = x + (bitmap.width * 2)
+        detectCollision.bottom = y + (bitmap.height * 2)
     }
 }
