@@ -18,7 +18,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.shoppinglist.ui.theme.ShoppingListTheme
 
 @Composable
-fun LoginView(modifier: Modifier = Modifier){
+fun LoginView(modifier: Modifier = Modifier,
+              onLoginSuccess: () -> Unit = {}){
 
     var viewModel: LoginViewModel = viewModel()
     val state = viewModel.state.value
@@ -44,7 +45,11 @@ fun LoginView(modifier: Modifier = Modifier){
                     Text("Password:")
                 }
             )
-            Button(onClick = viewModel::onLoginClick,
+            Button(onClick = {
+                viewModel.onLoginClick{
+                    onLoginSuccess()
+                }
+            },
                 content = {
                     Text("Login")
                 }
