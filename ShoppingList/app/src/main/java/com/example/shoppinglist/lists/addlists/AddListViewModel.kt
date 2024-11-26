@@ -1,8 +1,10 @@
-package com.example.shoppinglist
+package com.example.shoppinglist.lists.addlists
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.shoppinglist.TAG
+import com.example.shoppinglist.models.ListLists
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
@@ -28,7 +30,7 @@ class AddListViewModel: ViewModel() {
         val currentUser = auth.currentUser
         val userID = currentUser?.uid
 
-        val listItems = ListItems("", state.value.name, arrayListOf(userID?:""))
+        val listItems = ListLists("", state.value.name, arrayListOf(userID?:""))
 
         db.collection("lists")
             .add(listItems)

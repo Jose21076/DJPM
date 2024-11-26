@@ -1,4 +1,4 @@
-package com.example.shoppinglist
+package com.example.shoppinglist.login
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,10 +18,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.shoppinglist.ui.theme.ShoppingListTheme
 
 @Composable
-fun LoginView(modifier: Modifier = Modifier,
-              onLoginSuccess: () -> Unit = {}){
+fun RegisterView(modifier: Modifier = Modifier,
+              onRegisterSuccess: () -> Unit = {}){
 
-    var viewModel: LoginViewModel = viewModel()
+    var viewModel: RegisterViewModel = viewModel()
     val state = viewModel.state.value
 
 
@@ -45,13 +45,24 @@ fun LoginView(modifier: Modifier = Modifier,
                     Text("Password:")
                 }
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            TextField(value =state.rePassword,
+            onValueChange = {
+                viewModel.onPasswordConfirm(it)
+            },
+            placeholder = {
+                Text("Re-enter Password:")
+            })
+            Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {
-                viewModel.onLoginClick{
-                    onLoginSuccess()
+                if(state.password == state.rePassword){
+                    viewModel.onRegisterClick{
+                        onRegisterSuccess()
+                    }
                 }
             },
                 content = {
-                    Text("Login")
+                    Text("Register")
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -67,8 +78,8 @@ fun LoginView(modifier: Modifier = Modifier,
 
 @Preview(showBackground = true)
 @Composable
-fun LoginviewPreview(){
+fun RegisterviewPreview(){
     ShoppingListTheme {
-        LoginView()
+        RegisterView()
     }
 }

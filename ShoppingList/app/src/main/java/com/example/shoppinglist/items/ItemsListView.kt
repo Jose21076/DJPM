@@ -1,9 +1,8 @@
-package com.example.shoppinglist
+package com.example.shoppinglist.items
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,56 +21,67 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.shoppinglist.R
+import com.example.shoppinglist.screen
 import com.example.shoppinglist.ui.theme.ShoppingListTheme
-import androidx.compose.material3.Text
 
 @Composable
-fun ListListsView(modifier: Modifier = Modifier,
-                  navController: NavController = rememberNavController()
+fun ListItemsView(
+    modifier: Modifier = Modifier,
+    listId : String,
+    navController: NavController = rememberNavController()
 ){
 
-    val viewModel : ListListsViewModel = viewModel()
+    val viewModel : ItemsListViewModel = viewModel()
     val state = viewModel.state.value
 
-    LazyColumn(modifier = modifier.fillMaxSize()) {
-        itemsIndexed(
-            items = state.listItemsList
-        ){  index, item ->
-            Text(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(16.dp),
-                text = item.name?:""
-            )
-        }
-    }
-
     Box(modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd){
-        Button(modifier = Modifier
-            .padding(10.dp)
-            .size(64.dp),
+        contentAlignment = Alignment.BottomEnd) {
+
+        LazyColumn(modifier = modifier.fillMaxSize()) {
+            itemsIndexed(
+                items = state.listItemsList
+            ) { index, item ->
+                ItemRomView(item = item) {
+                    viewModel
+                        .toggleItemChecked(
+                            listId = listId,
+                            item = item
+                        )
+                }
+            }
+        }
+
+        Button(
+            modifier = Modifier
+                .padding(16.dp)
+                .size(64.dp),
             onClick = {
-                navController.navigate(screen.AddList.route)
+                navController.navigate(
+                    screen.AddItem.route.replace("{listId}", listId)
+                )
             }) {
             Image(
                 modifier = Modifier
                     .scale(2.0f)
                     .size(64.dp),
                 colorFilter = ColorFilter.tint(Color.White),
-                painter = painterResource(id = R.drawable.baseline_add_24),
+                painter = painterResource(R.drawable.baseline_add_24),
                 contentDescription = "add"
             )
         }
     }
-    LaunchedEffect(key1 = Unit){
-        viewModel.getLists()
+
+    LaunchedEffect (key1 = true){
+        viewModel.getItems(listId)
     }
+
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun ListListsViewPreview(){
+fun ListItemsViewPreview(){
     ShoppingListTheme {
-        ListListsView(modifier = Modifier)
+        ListItemsView(listId = "")
     }
 }
