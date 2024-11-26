@@ -21,7 +21,7 @@ import com.example.shoppinglist.ui.theme.ShoppingListTheme
 fun AddItemView(
     modifier: Modifier = Modifier,
     listId : String,
-    navController: NavController = rememberNavController()
+    navController: NavController //= rememberNavController()
 ){
     val viewModel : AddItemViewModel = viewModel()
     val state = viewModel.state.value
@@ -59,11 +59,11 @@ fun AddItemView(
         }
     }
 }
-
+/*
 @Preview
 @Composable
 fun AddListViewPreview(){
     ShoppingListTheme {
         AddItemView(modifier = Modifier, listId = "")
     }
-}
+}*/

@@ -29,7 +29,7 @@ import com.example.shoppinglist.ui.theme.ShoppingListTheme
 fun ListItemsView(
     modifier: Modifier = Modifier,
     listId : String,
-    navController: NavController = rememberNavController()
+    navController: NavController //= rememberNavController()
 ){
 
     val viewModel : ItemsListViewModel = viewModel()
@@ -77,11 +77,11 @@ fun ListItemsView(
     }
 
 }
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun ListItemsViewPreview(){
     ShoppingListTheme {
         ListItemsView(listId = "")
     }
-}
+}*/

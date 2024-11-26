@@ -11,7 +11,7 @@ import com.google.firebase.firestore.firestore
 
 data class AddItemState(
     val name: String = "",
-    val qtd: Double? = 0.0,
+    val qtd: String? = "",
     val checked: Boolean = false,
     val isLoading: Boolean = false,
     val error: String? = null
@@ -26,17 +26,13 @@ class AddItemViewModel: ViewModel() {
     }
 
     fun onQtdChange(qtd: String) {
-        state.value = state.value.copy(qtd = qtd.toDouble())
+        state.value = state.value.copy(qtd = qtd)
     }
 
     fun addItem(listId: String){
         val db = Firebase.firestore
 
-        var auth = Firebase.auth
-        val currentUser = auth.currentUser
-        val userID = currentUser?.uid
-
-        val item = Item("", state.value.name, state.value.qtd, state.value.checked)
+        val item = Item("", state.value.name, state.value.qtd?.toDouble(), state.value.checked)
 
         db.collection("lists")
             .document(listId)
