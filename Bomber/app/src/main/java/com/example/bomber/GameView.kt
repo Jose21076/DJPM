@@ -10,6 +10,12 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import com.example.bomber.objects.Block
+import com.example.bomber.objects.Bomb
+import com.example.bomber.objects.Boom
+import com.example.bomber.objects.Diamond
+import com.example.bomber.objects.Miner
+import com.example.bomber.objects.Player
 import com.example.bomber.ui.theme.Brown
 
 class GameView : SurfaceView, Runnable {

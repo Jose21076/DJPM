@@ -1,74 +1,57 @@
 package ipca.examples.dailynews.ui
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import ipca.examples.dailynews.models.Article
+import ipca.examples.dailynews.repositories.ArticleRepository
+import ipca.examples.dailynews.repositories.ResultWrapper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import org.json.JSONObject
-import java.io.IOException
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 data class ArticlesState (
-    val articles: ArrayList<Article> = arrayListOf(),
+    val articles: List<Article> = arrayListOf(),
     val isLoading: Boolean = false,
     val error: String? = null
 )
 
-class HomeViewModel : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    val articleRepository: ArticleRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ArticlesState())
     val uiState : StateFlow<ArticlesState> = _uiState.asStateFlow()
 
     fun fetchArticles() {
-
-        _uiState.value = ArticlesState(
-            isLoading = true,
-            error = null)
-
-        val client = OkHttpClient()
-
-        val request = Request.Builder()
-            .url("https://api.currentsapi.services/v1/latest-news?language=pt&apiKey=_y7NiyxspzKVBY-vskUu9gIUJXUNFhF1zavlAIOPkK17BbIk")
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace()
-                _uiState.value = ArticlesState(
-                    isLoading = true,
-                    error = e.message)
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                response.use {
-                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
-                    val articlesResult = arrayListOf<Article>()
-                    val result = response.body!!.string()
-                    val jsonResult = JSONObject(result)
-                    val status = jsonResult.getString("status")
-                    if (status == "ok") {
-                        val articlesJson = jsonResult.getJSONArray("news")
-                        for (index in 0 until articlesJson.length()) {
-                            val articleJson = articlesJson.getJSONObject(index)
-                            val article = Article.fromJson(articleJson)
-                            articlesResult.add(article)
-                        }
+        articleRepository
+            .fetchArticles("latest-news?language=pt")
+            .onEach { result ->
+                when(result) {
+                    is ResultWrapper.Success ->{
+                        _uiState.value = ArticlesState(
+                            articles = result.data?: emptyList(),
+                            isLoading = false,
+                            error = null
+                        )
                     }
-                    _uiState.value = ArticlesState(
-                        articles = articlesResult,
-                        isLoading = false,
-                        error = null)
+                    is ResultWrapper.Error ->{
+                        _uiState.value = ArticlesState(
+                            isLoading = false,
+                            error = result.message
+                        )
+                    }
+                    is ResultWrapper.Loading ->{
+                        _uiState.value = ArticlesState(
+                            isLoading = true
+                        )
+                    }
                 }
-            }
-        })
+            }.launchIn(viewModelScope)
     }
 
 }

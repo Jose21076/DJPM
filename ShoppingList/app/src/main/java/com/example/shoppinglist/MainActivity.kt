@@ -16,6 +16,7 @@ import com.example.shoppinglist.items.ListItemsView
 import com.example.shoppinglist.items.additems.AddItemView
 import com.example.shoppinglist.lists.addlists.AddListView
 import com.example.shoppinglist.lists.ListListsView
+import com.example.shoppinglist.lists.addOwner.AddOwnerView
 import com.example.shoppinglist.login.LoginView
 import com.example.shoppinglist.login.RegisterView
 import com.example.shoppinglist.ui.theme.ShoppingListTheme
@@ -54,6 +55,14 @@ class MainActivity : ComponentActivity() {
                         composable(screen.Home.route) {
                             ListListsView(navController = navcontroller)
                         }
+                        composable(screen.AddOwner.route) {
+                            val listId = it.arguments?.getString("listId")
+                            AddOwnerView(
+                                modifier = Modifier.padding(innerPadding),
+                                listId = listId ?: "",
+                                navController = navcontroller
+                            )
+                        }
                         composable(screen.AddList.route) {
                             AddListView(navController = navcontroller)
                         }
@@ -91,6 +100,7 @@ sealed class screen(val route: String){
     object Login: screen("login")
     object Register: screen("register")
     object Home: screen("home")
+    object AddOwner: screen("add_owner/{listId}")
     object ListItems : screen("list_items/{listId}")
     object AddList: screen("add_list")
     object AddItem: screen("add_item/{listId}")

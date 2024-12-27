@@ -23,3 +23,8 @@ fun Date.toYYYYMMDD() : String {
         .format(this)
 }
 
+fun Date.toServerDate() : String {
+    val pattern = "yyyy-MM-dd HH:mm:ss +FFFF"
+    return SimpleDateFormat(pattern, Locale.getDefault())
+        .format(this)
+}

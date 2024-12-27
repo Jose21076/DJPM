@@ -42,7 +42,7 @@ fun ListItemsView(
             itemsIndexed(
                 items = state.listItemsList
             ) { index, item ->
-                ItemRomView(item = item) {
+                ItemRomView(listid = listId, item = item) {
                     viewModel
                         .toggleItemChecked(
                             listId = listId,

@@ -1,13 +1,24 @@
 package ipca.examples.dailynews.models
 
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Entity
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.PrimaryKey
+import androidx.room.Query
+import ipca.examples.dailynews.encodeURL
 import ipca.examples.dailynews.parseDate
+import ipca.examples.dailynews.toServerDate
 import org.json.JSONObject
 import java.util.Date
 
+@Entity
 class Article (var id: String? = null,
                var title: String? = null,
                var description: String? = null ,
-               var url: String? = null,
+               @PrimaryKey
+               var url: String,
                var author: String? = null,
                var urlToImage: String? = null,
                var language: String? = null,
@@ -19,7 +30,7 @@ class Article (var id: String? = null,
                 id = json.getString("id"),
                 title = json.getString("title"),
                 description = json.getString("description").removePrefix("<p>").removeSuffix("<p>"),
-                url = json.getString("url"),
+                url = json.getString("url")?:"no url",
                 author = json.getString("author"),
                 urlToImage = json.getString("image"),
                 language = json.getString("language"),
@@ -28,9 +39,32 @@ class Article (var id: String? = null,
         }
     }
 
-    fun descriptionformat(article : Article) : Article{
-
-        return article
+    fun toJsonString() : String {
+        val jsonObject = JSONObject()
+        jsonObject.put("id"          , id                           )
+        jsonObject.put("title"       , title                        )
+        jsonObject.put("description" , description                  )
+        jsonObject.put("url"         , url.encodeURL()             )
+        jsonObject.put("author"      , author                       )
+        jsonObject.put("image"  , urlToImage?.encodeURL()                          )
+        jsonObject.put("language"    , language                     )
+        jsonObject.put("published" , publishedAt?.toServerDate()  )
+        return jsonObject.toString()
     }
+}
+
+@Dao
+interface ArticleDao {
+    @Query("SELECT * FROM article")
+    fun getAll(): List<Article>
+
+    @Query("SELECT * FROM article WHERE url = :url")
+    fun loadByUrl(url: String): Article
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert( article: Article)
+
+    @Delete
+    fun delete(article: Article)
 }
 

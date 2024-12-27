@@ -17,11 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ipca.examples.dailynews.Screen
-import ipca.examples.dailynews.encodeURL
 import ipca.examples.dailynews.models.Article
 import ipca.examples.dailynews.ui.theme.DailyNewsTheme
 import ipca.examples.dailynews.ui.theme.Grey300
@@ -31,7 +30,7 @@ fun HomeView(
     modifier: Modifier = Modifier,
     navController: NavController = rememberNavController()) {
 
-    val viewModel : HomeViewModel = viewModel()
+    val viewModel : HomeViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
     HomeViewContent(modifier = modifier,
@@ -71,15 +70,15 @@ fun HomeViewContent(modifier: Modifier = Modifier,
                                 Log.d("dailynews",article.url ?:"none")
                                 navController.navigate(
                                     Screen.ArticleDetail.route
-                                        .replace("{articleUrl}", article.url?.encodeURL()?:"")
+                                        .replace("{article}", article.toJsonString())
                                 )
                             },
-                        article = article)
+                        article = article
+                    )
                 }
             }
         }
     }
-
 }
 
 @Preview(showBackground = true)
@@ -89,8 +88,9 @@ fun HomeViewPreview() {
     val articles = arrayListOf(
         Article(title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
             description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin lobortis augue in erat scelerisque, vitae fringilla nisi tempus. Sed finibus tellus porttitor dignissim eleifend. Etiam sed neque libero. Integer auctor turpis est. Nunc ac auctor velit. Nunc et mi sollicitudin, iaculis nunc et, congue neque. Suspendisse potenti. Vestibulum finibus justo sed eleifend commodo. Phasellus vestibulum ligula nisi, convallis rhoncus quam placerat id. Donec eu lobortis lacus, quis porta tortor. Suspendisse quis dolor sapien. Maecenas finibus purus at orci aliquam eleifend. Nam venenatis sapien ac enim efficitur pretium. Praesent sagittis risus vitae feugiat blandit. Etiam non neque arcu. Cras a mauris eu erat sodales iaculis non a lorem.",
+            url = "",
             urlToImage = "https://media.istockphoto.com/id/1166633394/pt/foto/victorian-british-army-gymnastic-team-aldershot-19th-century.jpg?s=1024x1024&w=is&k=20&c=fIfqysdzOinu8hNJG6ZXOhl8ghQHA7ySl8BZZYWrxyQ="),
-        Article(title = "Lorem Ipsum is simply dummy text of the printing", description = "description"))
+        Article("Lorem Ipsum is simply dummy text of the printing", "description", url = ""))
 
     //val articles = arrayListOf<Article>()
     DailyNewsTheme {

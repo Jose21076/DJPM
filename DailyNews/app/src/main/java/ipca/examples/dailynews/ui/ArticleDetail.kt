@@ -8,10 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import ipca.examples.dailynews.models.Article
 
 
 @Composable
-fun ArticleDetail(modifier: Modifier, url: String) {
+fun ArticleDetail(modifier: Modifier, article: Article) {
     Box(modifier = modifier.fillMaxSize()) {
         AndroidView(factory = { context ->
             WebView(context).apply {
@@ -23,7 +26,7 @@ fun ArticleDetail(modifier: Modifier, url: String) {
             }
         },
             update = { webView ->
-                webView.loadUrl(url)
+                webView.loadUrl(article.url!!)
             })
     }
 }
@@ -31,5 +34,8 @@ fun ArticleDetail(modifier: Modifier, url: String) {
 @Preview
 @Composable
 fun ArticleDetailPreview() {
-    ArticleDetail(modifier = Modifier, url = "https://www.google.com")
+    ArticleDetail(modifier = Modifier,
+        article = Article(
+            url = "http://google.com"
+        ))
 }
